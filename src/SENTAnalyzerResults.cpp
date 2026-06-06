@@ -138,11 +138,65 @@ void SENTAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBase
 
 void SENTAnalyzerResults::GeneratePacketTabularText( U64 packet_id, DisplayBase display_base )
 {
-	//not supported
+	ClearTabularText();
 
+	U64 frameid;
+	U64 frameid_end;
+
+	GetFramesContainedInPacket(packet_id, &frameid, &frameid_end);
+
+	std::stringstream ss;
+	bool first = true;
+
+	while (frameid <= frameid_end)
+	{
+		Frame frame = GetFrame(frameid);
+		if (!first) ss << " | ";
+		first = false;
+
+		switch( frame.mType )
+		{
+			case SyncPulse:
+				ss << "SYNC";
+				break;
+			case StatusNibble:
+			{
+				char number_str[128];
+				AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 4, number_str, 128 );
+				ss << "Status:" << number_str;
+				break;
+			}
+			case FCNibble:
+			{
+				char number_str[128];
+				AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 4, number_str, 128 );
+				ss << "FC:" << number_str;
+				break;
+			}
+			case CRCNibble:
+			{
+				char number_str[128];
+				AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 4, number_str, 128 );
+				ss << "CRC:" << number_str;
+				break;
+			}
+			case PausePulse:
+				ss << "PAUSE";
+				break;
+			case Error:
+				ss << "ERR";
+				break;
+			default:
+				ss << "?";
+				break;
+		}
+		frameid++;
+	}
+
+	AddTabularText(ss.str().c_str());
 }
 
 void SENTAnalyzerResults::GenerateTransactionTabularText( U64 transaction_id, DisplayBase display_base )
 {
-	//not supported
+	GeneratePacketTabularText(transaction_id, display_base);
 }
