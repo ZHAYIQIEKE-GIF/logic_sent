@@ -8,17 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Install newer version of cmake
-      uses: lukka/get-cmake@v3.18.0
+      uses: lukka/get-cmake@latest
     - name: Build using cmake
-      run: mkdir build; cd build; cmake ..; cmake --build .
+      run: mkdir build && cd build && cmake .. && cmake --build .
     - name: Move build results
-      run: mkdir build/Analyzers/linux; mv build/Analyzers/*.so build/Analyzers/linux
+      run: mkdir -p build/Analyzers/linux && mv build/Analyzers/*.so build/Analyzers/linux
     - name: Store build result as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: SENTanalyzer
+        name: SENTanalyzer-linux
         path: build/Analyzers
 
   build-macos:
@@ -26,17 +26,17 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Install newer version of cmake
-      uses: lukka/get-cmake@v3.18.0
+      uses: lukka/get-cmake@latest
     - name: Build using cmake
-      run: mkdir build; cd build; cmake ..; cmake --build .
+      run: mkdir build && cd build && cmake .. && cmake --build .
     - name: Move build results
-      run: mkdir build/Analyzers/macOS; mv build/Analyzers/*.so build/Analyzers/macOS
+      run: mkdir -p build/Analyzers/macOS && mv build/Analyzers/*.so build/Analyzers/macOS
     - name: Store build result as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: SENTanalyzer
+        name: SENTanalyzer-macos
         path: build/Analyzers
 
   build-windows:
@@ -44,15 +44,15 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Install newer version of cmake
-      uses: lukka/get-cmake@v3.18.0
+      uses: lukka/get-cmake@latest
     - name: Build using cmake
-      run: mkdir build; cd build; cmake ..; cmake --build . --config Release
+      run: mkdir build && cd build && cmake .. && cmake --build . --config Release
     - name: Move build results
-      run: mkdir build/Analyzers/windows; mv build/Analyzers/Release/* build/Analyzers/windows
+      run: mkdir build/Analyzers/windows && mv build/Analyzers/Release/* build/Analyzers/windows
     - name: Store build result as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: SENTanalyzer
+        name: SENTanalyzer-windows
         path: build/Analyzers
