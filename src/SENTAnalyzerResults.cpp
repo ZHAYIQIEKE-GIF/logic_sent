@@ -140,63 +140,52 @@ void SENTAnalyzerResults::GeneratePacketTabularText( U64 packet_id, DisplayBase 
 {
 	ClearTabularText();
 
-	U64 frameid;
-	U64 frameid_end;
-
-	GetFramesContainedInPacket(packet_id, &frameid, &frameid_end);
+	U64 frame_id;
+	U64 frame_id_end;
+	GetFramesContainedInPacket( packet_id, &frame_id, &frame_id_end );
 
 	std::stringstream ss;
-	bool first = true;
 
-	while (frameid <= frameid_end)
+	while( frame_id <= frame_id_end )
 	{
-		Frame frame = GetFrame(frameid);
-		if (!first) ss << " | ";
-		first = false;
+		Frame frame = GetFrame( frame_id );
+		char number_str[128];
 
 		switch( frame.mType )
 		{
 			case SyncPulse:
-				ss << "SYNC";
+				ss << "Sync ";
 				break;
 			case StatusNibble:
-			{
-				char number_str[128];
 				AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 4, number_str, 128 );
-				ss << "Status:" << number_str;
+				ss << "Status:" << number_str << " ";
 				break;
-			}
 			case FCNibble:
-			{
-				char number_str[128];
 				AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 4, number_str, 128 );
-				ss << "FC:" << number_str;
+				ss << "FC:" << number_str << " ";
 				break;
-			}
 			case CRCNibble:
-			{
-				char number_str[128];
 				AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 4, number_str, 128 );
-				ss << "CRC:" << number_str;
+				ss << "CRC:" << number_str << " ";
 				break;
-			}
 			case PausePulse:
-				ss << "PAUSE";
+				AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 4, number_str, 128 );
+				ss << "Pause:" << number_str << " ";
 				break;
 			case Error:
-				ss << "ERR";
+				ss << "Error ";
 				break;
 			default:
-				ss << "?";
+				ss << "? ";
 				break;
 		}
-		frameid++;
+		frame_id++;
 	}
 
-	AddTabularText(ss.str().c_str());
+	AddTabularText( ss.str().c_str() );
 }
 
 void SENTAnalyzerResults::GenerateTransactionTabularText( U64 transaction_id, DisplayBase display_base )
 {
-	GeneratePacketTabularText(transaction_id, display_base);
+	//not supported
 }
